@@ -6,11 +6,11 @@ import Filter from "../filter/Filter";
 const Home = () => {
 
     return (
-            <div className="container">
-                <Filter />
-                <PizzaList />
-                <Pagination />
-            </div>
+        <div className="container">
+            <Filter/>
+            <PizzaList/>
+            <Pagination/>
+        </div>
     );
 };
 

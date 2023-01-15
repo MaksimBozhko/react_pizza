@@ -1,17 +1,10 @@
 import React from 'react';
 import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
 import {addItem, itemsType} from "../../redux/slices/cartSlice";
+import {PizzasItemType} from "../../redux/slices/pizzaSlice";
 
-type PizzasItemTypeProps = {
-    id: number
-    title: string
-    price: number
-    img: string
-    sizes: Array<number>
-    types: Array<number>
-}
 
-const PizzaItem = ({id, title, price, img, sizes, types}: PizzasItemTypeProps) => {
+const PizzaItem = ({id, title, price, img, sizes, types}: PizzasItemType) => {
     const dispatch = useAppDispatch()
     const item: itemsType | undefined = useAppSelector(state => state.cart.items.find(item => item.id === id))
     const [type, setType] = React.useState<number>(0)

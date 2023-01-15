@@ -1,16 +1,18 @@
 import React from 'react';
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import Search from "./search/Search";
 import {useAppSelector} from "../hooks/hooks";
+import logo from '../assets/img/logo.png'
 
 const Header = () => {
     const {totalPrice, totalCount} = useAppSelector(state => state.cart)
+    const {pathname} = useLocation()
     return (
         <div className="header">
             <div className="container">
                 <NavLink to='/'>
                     <div className="header__logo">
-                        {/*<img width="38" src={logo} alt="Pizza logo"/>*/}
+                        <img  src={logo} alt="Pizza logo"/>
                         <div>
                             <h1>React Pizza</h1>
                             <p>самая вкусная пицца во вселенной</p>
@@ -19,7 +21,7 @@ const Header = () => {
                 </NavLink>
                 <Search/>
                 <div className="header__cart">
-                    <NavLink to="/cart" className="button button--cart">
+                    {pathname !== '/cart' && <NavLink to="/cart" className="button button--cart">
                         <span>{totalPrice} ₽</span>
                         <div className="button__delimiter"></div>
                         <svg
@@ -52,7 +54,7 @@ const Header = () => {
                             />
                         </svg>
                         <span>{totalCount}</span>
-                    </NavLink>
+                    </NavLink>}
                 </div>
             </div>
         </div>

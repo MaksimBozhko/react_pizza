@@ -3,29 +3,23 @@ import PizzaItem from "./PizzaItem";
 import Skeleton from "./Skeleton";
 import qs from 'qs'
 import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
-import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {initialStateType, setFilters} from "../../redux/slices/filterSlice";
 import {sorts} from "../filter/sort/Sort";
+import {fetchPizzas} from "../../redux/slices/pizzaSlice";
 
 const PizzaList = () => {
-    const fetchPizzas = () => {
+    const getPizzas = async () => {
         const search = searchValue ? `search=${searchValue}` : ''
         const category = categoryId > 0 ? `&category=${categoryId}` : ''
-        setIsLoading(true)
-        axios.get(`https://63b31dd2ea89e3e3db3e6a9a.mockapi.io/items?page=${currentPage}&limit=4${category}&sortBy=${sort.sort}&order=desc&${search}`)
-            .then((arr: any) => {
-                setPizzas(arr.data)
-                setIsLoading(false)
-            })
+        dispatch(fetchPizzas({currentPage, category, sort, search}))
         //window.scrollTo(0, 0)
     }
     const searchValue = useAppSelector(state => state.search.searchValue)
     const {currentPage, categoryId, sort} = useAppSelector(state => state.filter)
+    const {items, status} = useAppSelector(state => state.pizza)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const [pizzas, setPizzas] = React.useState<any>([])
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const isSearch = useRef<boolean>(false)
     const isMounted = useRef<boolean>(false)
     //если был первый рендер, то вшивать параметры в URL
@@ -57,19 +51,22 @@ const PizzaList = () => {
     // если пришли параметры из URL, то запрос делать не нужно т.к это будет вторая перерисовка
     useEffect(() => {
         if (!isSearch.current) {
-            fetchPizzas()
+            getPizzas()
         }
         isSearch.current = false
     }, [categoryId, sort, searchValue, currentPage])
-    const pizzasList = pizzas.map((p: any) => <PizzaItem key={p.id} id={p.id} title={p.title} price={p.price}
-                                                         img={p.imageUrl} sizes={p.sizes} types={p.types}/>)
+    const pizzasList = items.map((p: any) => <Link to={`/react_pizza/${p.id}`}><PizzaItem key={p.id} id={p.id} title={p.title} price={p.price}
+                                                                       img={p.imageUrl} sizes={p.sizes} types={p.types} /> </Link>)
     return (
         <div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
-                {isLoading
-                    ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
-                    : pizzasList}
+                {status === 'error'
+                    ? <h2>Sorry, error</h2>
+                    :status === 'success'
+                        ? pizzasList
+                        : [...new Array(6)].map((_, i) => <Skeleton key={i} />)
+                }
             </div>
         </div>
     );

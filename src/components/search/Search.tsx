@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from 'react';
-import s from './Search.module.css'
+import './Search.scss'
 import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
 import {setSearchValue} from "../../redux/slices/searchSlice";
 
@@ -8,10 +8,10 @@ const Search = () => {
     const dispatch = useAppDispatch()
 
     return (
-        <div className={s.root}>
+        <div className={'root'}>
             <input value={searchValue}
                    onChange={(e: ChangeEvent<HTMLInputElement>) => dispatch(setSearchValue(e.currentTarget.value))}
-                   placeholder='Search' className={s.input}/>
+                   placeholder='Search' className={'input'}/>
         </div>
     )
 };
